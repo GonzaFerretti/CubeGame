@@ -25,7 +25,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Blocks")
 	FVector StartingPosition;
 	UPROPERTY(EditAnywhere, Category = "Blocks")
-	TMap<FIntVector, ABlock*> PyramidCoordinates;
+	TMap<FIntPoint, ABlock*> PyramidCoordinates;
 	void GeneratePyramidLevel(int Level, float Padding, int LevelAmount);
 	UWorld* World;
 	void GenerateCubeMaterials();
@@ -35,9 +35,12 @@ protected:
 	UMaterialInterface* BaseCubeMaterial;
 	UPROPERTY(EditAnywhere, Category = "Block Settings")
 	TMap<UMaterialInstanceDynamic*,FLinearColor> PossibleCubeMaterials;
+	int PyramidSize;
+	UPROPERTY(EditAnywhere, Category = "Block Settings")
+	TArray<FIntPoint> DirectionsToCheck;
 
 public:	
 	virtual void Tick(float DeltaTime) override;
 	void GeneratePyramid(int Height, float Padding);
-	void ExecuteAttackOnBlock(FIntVector TargetedBlockCoordinates, FLinearColor ColorToCompare);
+	void ExecuteAttackOnBlock(FIntPoint TargetedBlockCoordinates, FLinearColor ColorToCompare);
 };

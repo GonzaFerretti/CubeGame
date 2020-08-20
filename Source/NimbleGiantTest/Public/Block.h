@@ -24,14 +24,14 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Visual)
 	FLinearColor CubeColor;
 	UPROPERTY(EditAnywhere, Category = "Pyramid Data")
-	FIntVector CurrentPyramidCoordinates;
+	FIntPoint CurrentPyramidCoordinates;
 	UPROPERTY(EditAnywhere, Category = "Pyramid Data")
 	APyramid* ParentPyramid;
 
 public:	
 	virtual void Tick(float DeltaTime) override;
 	void SetTintedMaterial(UMaterialInstanceDynamic* TintedMaterial, FLinearColor Color);
-	void InitializeBlock(APyramid* _ParentPyramid, FIntVector _CurrentCoordinates);
+	void InitializeBlock(APyramid* _ParentPyramid, FIntPoint _CurrentCoordinates);
 	void StartBlockDestruction();
 	UMaterialInterface* GetBaseMaterial();
 	FLinearColor GetColor();

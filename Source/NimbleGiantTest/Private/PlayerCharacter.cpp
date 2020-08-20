@@ -98,11 +98,14 @@ void APlayerCharacter::Shoot()
 
 
 	bool IsHit = GetWorld()->LineTraceSingleByChannel(HitResult, RayStartPosition, EndPosition, ECC_Visibility, CollisionParams);
-	bool HitObjectIsBlock = HitResult.GetActor()->IsA<ABlock>();
-	if (IsHit && HitObjectIsBlock)
+	if (IsHit)
 	{
-		ABlock* HitBlock = ((ABlock*)HitResult.GetActor());
-		HitBlock->StartBlockDestruction();
+		bool HitObjectIsBlock = HitResult.GetActor()->IsA<ABlock>();
+		if (HitObjectIsBlock)
+		{
+			ABlock* HitBlock = ((ABlock*)HitResult.GetActor());
+			HitBlock->StartBlockDestruction();
+		}
 	}
 }
 

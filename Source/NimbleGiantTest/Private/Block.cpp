@@ -33,7 +33,7 @@ UMaterialInterface* ABlock::GetBaseMaterial()
 	return Mesh->GetMaterial(0);
 }
 
-void ABlock::InitializeBlock(APyramid* _ParentPyramid, FIntVector _CurrentCoordinates)
+void ABlock::InitializeBlock(APyramid* _ParentPyramid, FIntPoint _CurrentCoordinates)
 {
 	ParentPyramid = _ParentPyramid;
 	CurrentPyramidCoordinates = _CurrentCoordinates;
