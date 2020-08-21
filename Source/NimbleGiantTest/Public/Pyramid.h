@@ -26,6 +26,8 @@ protected:
 	FVector StartingPosition;
 	UPROPERTY(EditAnywhere, Category = "Blocks")
 	TMap<FIntPoint, ABlock*> PyramidCoordinates;
+	UPROPERTY(EditAnywhere, Category = "Blocks")
+	TMap<FIntPoint, FVector> PyramidBlockWorldPositions;
 	void GeneratePyramidLevel(int Level, float Padding, int LevelAmount);
 	UWorld* World;
 	void GenerateCubeMaterials();
@@ -38,9 +40,14 @@ protected:
 	int PyramidSize;
 	UPROPERTY(EditAnywhere, Category = "Block Settings")
 	TArray<FIntPoint> DirectionsToCheck;
+	void EnableFallForFloatingBlocks();
+	bool IsTheBlockFloating(FIntPoint BlockCoordinates);
+	FIntPoint FindTargetCoordinateForFallingBlock(FIntPoint FallingBlockCoordinates);
+	void ContinueBlockDestructionCascade(FIntPoint TargetedBlockCoordinates, FLinearColor ColorToCompare);
 
 public:	
 	virtual void Tick(float DeltaTime) override;
 	void GeneratePyramid(int Height, float Padding);
-	void ExecuteAttackOnBlock(FIntPoint TargetedBlockCoordinates, FLinearColor ColorToCompare);
+	void StartBlockCascadeDestruction(FIntPoint TargetedBlockCoordinates, FLinearColor ColorToCompare);
+	void AddCubeToPyramidCoordinates(ABlock* BlockToAdd, FIntPoint Coordinates);
 };

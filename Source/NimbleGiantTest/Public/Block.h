@@ -28,11 +28,25 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Pyramid Data")
 	APyramid* ParentPyramid;
 
+
+	UPROPERTY(EditAnywhere, Category = Fall)
+	float FallSnapDistance;
+	UPROPERTY(EditAnywhere, Category = Fall)
+	float FallSpeed;
+	UPROPERTY(VisibleAnywhere, Category = Fall)
+	bool bIsFalling;
+	UPROPERTY(VisibleAnywhere, Category = Fall)
+	FVector _TargetPosition;
+	UPROPERTY(VisibleAnywhere, Category = Fall)
+	FIntPoint _TargetCoordinates;
+	void MoveTowardsFallPosition(float DeltaTime);
+
 public:	
 	virtual void Tick(float DeltaTime) override;
 	void SetTintedMaterial(UMaterialInstanceDynamic* TintedMaterial, FLinearColor Color);
 	void InitializeBlock(APyramid* _ParentPyramid, FIntPoint _CurrentCoordinates);
 	void StartBlockDestruction();
-	UMaterialInterface* GetBaseMaterial();
+	void SetBlockFall(FVector TargetPosition, FIntPoint TargetCoordinates);
 	FLinearColor GetColor();
+	bool IsFalling();
 };

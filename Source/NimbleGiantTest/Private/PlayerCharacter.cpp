@@ -104,7 +104,10 @@ void APlayerCharacter::Shoot()
 		if (HitObjectIsBlock)
 		{
 			ABlock* HitBlock = ((ABlock*)HitResult.GetActor());
-			HitBlock->StartBlockDestruction();
+			if (!HitBlock->IsFalling())
+			{
+				HitBlock->StartBlockDestruction();
+			}
 		}
 	}
 }
