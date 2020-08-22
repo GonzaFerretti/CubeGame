@@ -27,23 +27,20 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Blocks")
 	TMap<FIntPoint, ABlock*> PyramidCoordinates;
 	UPROPERTY(EditAnywhere, Category = "Blocks")
+	int LastPointCount;
+	UPROPERTY(EditAnywhere, Category = "Blocks")
 	TMap<FIntPoint, FVector> PyramidBlockWorldPositions;
 	void GeneratePyramidLevel(int Level, float Padding, int LevelAmount);
 	UWorld* World;
-	void GenerateCubeMaterials();
 	UPROPERTY(EditAnywhere, Category = "Block Settings")
 	TArray<FLinearColor> PossibleCubeColors;
-	UPROPERTY(EditAnywhere, Category = Mesh, meta = (AllowPrivateAccess = "true"))
-	UMaterialInterface* BaseCubeMaterial;
-	UPROPERTY(EditAnywhere, Category = "Block Settings")
-	TMap<UMaterialInstanceDynamic*,FLinearColor> PossibleCubeMaterials;
 	int PyramidSize;
 	UPROPERTY(EditAnywhere, Category = "Block Settings")
 	TArray<FIntPoint> DirectionsToCheck;
 	void EnableFallForFloatingBlocks();
 	bool IsTheBlockFloating(FIntPoint BlockCoordinates);
 	FIntPoint FindTargetCoordinateForFallingBlock(FIntPoint FallingBlockCoordinates);
-	void ContinueBlockDestructionCascade(FIntPoint TargetedBlockCoordinates, FLinearColor ColorToCompare);
+	int ContinueBlockDestructionCascade(FIntPoint TargetedBlockCoordinates, FLinearColor ColorToCompare, int LastFibonacciValue, int SecondLastFibonacciValue, int PartialSum);
 
 public:	
 	virtual void Tick(float DeltaTime) override;

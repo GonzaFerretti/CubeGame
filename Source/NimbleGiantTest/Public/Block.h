@@ -21,8 +21,10 @@ protected:
 	virtual void BeginPlay() override;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Visual, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* Mesh;
-	UPROPERTY(EditAnywhere, Category = Visual)
+	UPROPERTY(EditAnywhere, Category = Visual, ReplicatedUsing = OnRep_CubeColorClientUpdate)
 	FLinearColor CubeColor;
+	UPROPERTY(EditAnywhere, Category = Visual, Replicated)
+	UMaterialInstanceDynamic* CubeMaterial;
 	UPROPERTY(EditAnywhere, Category = "Pyramid Data")
 	FIntPoint CurrentPyramidCoordinates;
 	UPROPERTY(EditAnywhere, Category = "Pyramid Data")
@@ -40,13 +42,17 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = Fall)
 	FIntPoint _TargetCoordinates;
 	void MoveTowardsFallPosition(float DeltaTime);
+	void CreateAndSetTintedMaterial();
 
 public:	
 	virtual void Tick(float DeltaTime) override;
-	void SetTintedMaterial(UMaterialInstanceDynamic* TintedMaterial, FLinearColor Color);
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	void SetCubeColor(FLinearColor Color);
 	void InitializeBlock(APyramid* _ParentPyramid, FIntPoint _CurrentCoordinates);
 	void StartBlockDestruction();
 	void SetBlockFall(FVector TargetPosition, FIntPoint TargetCoordinates);
+	UFUNCTION()
+	void OnRep_CubeColorClientUpdate();
 	FLinearColor GetColor();
 	bool IsFalling();
 };

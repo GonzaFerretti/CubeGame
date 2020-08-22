@@ -14,23 +14,12 @@ void APyramid::BeginPlay()
 {
 	Super::BeginPlay();
 	World = GetWorld();
-	APyramid::GenerateCubeMaterials();
 	APyramid::GeneratePyramid(7, 101);
 }
 
 void APyramid::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-}
-
-void APyramid::GenerateCubeMaterials()
-{
-	for (FLinearColor PossibleColor : PossibleCubeColors)
-	{
-		UMaterialInstanceDynamic* TintedMaterial = UMaterialInstanceDynamic::Create(BaseCubeMaterial, this, FName(PossibleColor.ToString()));
-		TintedMaterial->SetVectorParameterValue("TintColor", PossibleColor);
-		PossibleCubeMaterials.Add(TintedMaterial, PossibleColor);
-	}
 }
 
 void APyramid::EnableFallForFloatingBlocks()
@@ -79,7 +68,7 @@ FIntPoint APyramid::FindTargetCoordinateForFallingBlock(FIntPoint FallingBlockCo
 
 		if (!bBottomLeftBlockExists && !bBottomRightBlockExists)
 		{
-			FIntPoint NextUnderneathBlockCoordinates = FIntPoint(CurrentBaseCoordinates.X + 1, FMath::Clamp<int>(CurrentBaseCoordinates.Y -2,1, PyramidSize));
+			FIntPoint NextUnderneathBlockCoordinates = FIntPoint(CurrentBaseCoordinates.X + 1, FMath::Clamp<int>(CurrentBaseCoordinates.Y - 2, 1, PyramidSize));
 			if (!PyramidCoordinates.Contains(NextUnderneathBlockCoordinates))
 			{
 				CurrentBaseCoordinates = NextUnderneathBlockCoordinates;
@@ -118,21 +107,24 @@ void APyramid::GeneratePyramidLevel(int Level, float Padding, int LevelAmount)
 		SpawnParameters.Owner = this;
 
 		FIntPoint blockCoordinates = FIntPoint(XCoordinate, YCoordinate + 1);
-		ABlock* newBlock = World->SpawnActor<ABlock>(BlockBP);
-		PyramidCoordinates.Add(blockCoordinates, newBlock);
-		PyramidBlockWorldPositions.Add(blockCoordinates, RowPosition);
-		FLinearColor ColorToApply = PossibleCubeColors[FMath::RandRange(0, PossibleCubeColors.Num() - 1)];
-		UMaterialInstanceDynamic* MaterialToApply = *PossibleCubeMaterials.FindKey(ColorToApply);
-		newBlock->SetTintedMaterial(MaterialToApply, ColorToApply);
-		newBlock->SetActorLocation(RowPosition);
-		newBlock->InitializeBlock(this, blockCoordinates);
-		newBlock->SetActorLabel(blockCoordinates.ToString());
+		if (World)
+		{
+			ABlock* newBlock = World->SpawnActor<ABlock>(BlockBP);
+			PyramidCoordinates.Add(blockCoordinates, newBlock);
+			PyramidBlockWorldPositions.Add(blockCoordinates, RowPosition);
+			FLinearColor ColorToApply = PossibleCubeColors[FMath::RandRange(0, PossibleCubeColors.Num() - 1)];
+			newBlock->SetCubeColor(ColorToApply);
+			newBlock->SetActorLocation(RowPosition);
+			newBlock->InitializeBlock(this, blockCoordinates);
+			newBlock->SetActorLabel(blockCoordinates.ToString());
+		}
 	}
 }
 
 void APyramid::StartBlockCascadeDestruction(FIntPoint TargetedBlockCoordinates, FLinearColor ColorToCompare)
 {
-	APyramid::ContinueBlockDestructionCascade(TargetedBlockCoordinates, ColorToCompare);
+	int pointsSum = APyramid::ContinueBlockDestructionCascade(TargetedBlockCoordinates, ColorToCompare, 1, 0, 0);
+	LastPointCount = pointsSum;
 	APyramid::EnableFallForFloatingBlocks();
 }
 
@@ -141,8 +133,9 @@ void APyramid::AddCubeToPyramidCoordinates(ABlock* BlockToAdd, FIntPoint Coordin
 	PyramidCoordinates.Add(Coordinates, BlockToAdd);
 }
 
-void APyramid::ContinueBlockDestructionCascade(FIntPoint TargetedBlockCoordinates, FLinearColor ColorToCompare)
+int APyramid::ContinueBlockDestructionCascade(FIntPoint TargetedBlockCoordinates, FLinearColor ColorToCompare, int LastFibonacciValue, int SecondLastFibonacciValue, int PartialSum)
 {
+	int currentSum = PartialSum;
 	for (FIntPoint Direction : DirectionsToCheck)
 	{
 		FIntPoint NextBlockCoordinates = TargetedBlockCoordinates + Direction;
@@ -153,11 +146,13 @@ void APyramid::ContinueBlockDestructionCascade(FIntPoint TargetedBlockCoordinate
 			if (Block->GetColor() == ColorToCompare)
 			{
 				PyramidCoordinates.Remove(NextBlockCoordinates);
-				APyramid::ContinueBlockDestructionCascade(NextBlockCoordinates, ColorToCompare);
 				Block->Destroy();
+				currentSum += LastFibonacciValue + SecondLastFibonacciValue;
+				return APyramid::ContinueBlockDestructionCascade(NextBlockCoordinates, ColorToCompare, LastFibonacciValue + SecondLastFibonacciValue, LastFibonacciValue, currentSum);
 			}
 		}
 	}
+	return currentSum;
 }
 
 
