@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Pyramid.h"
+#include "CubeGameState.h"
 #include "Block.h"
 
 // Sets default values
@@ -15,6 +16,16 @@ void APyramid::BeginPlay()
 	Super::BeginPlay();
 	World = GetWorld();
 	APyramid::GeneratePyramid(7, 101);
+	if (GEngine)
+	{
+		FString IsNameStable = IsNameStableForNetworking() ? "True" : "False";
+		FString IsSupported = IsSupportedForNetworking() ? "True" : "False";
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Is Name Stable:") + IsNameStable);
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Is Supported:") + IsSupported);
+	}
+
+	GameState = World->GetGameState<ACubeGameState>();
+	GameState->SetPyramid(this);
 }
 
 void APyramid::Tick(float DeltaTime)
@@ -121,10 +132,16 @@ void APyramid::GeneratePyramidLevel(int Level, float Padding, int LevelAmount)
 	}
 }
 
-void APyramid::StartBlockCascadeDestruction(FIntPoint TargetedBlockCoordinates, FLinearColor ColorToCompare)
+void APyramid::StartBlockCascadeDestruction(FIntPoint TargetedBlockCoordinates, FLinearColor ColorToCompare, )
 {
+	ABlock* StartingCascadeBlock = PyramidCoordinates[TargetedBlockCoordinates];
+	PyramidCoordinates.Remove(TargetedBlockCoordinates);
+	StartingCascadeBlock->Destroy();
+
 	int pointsSum = APyramid::ContinueBlockDestructionCascade(TargetedBlockCoordinates, ColorToCompare, 1, 0, 0);
-	LastPointCount = pointsSum;
+
+
+
 	APyramid::EnableFallForFloatingBlocks();
 }
 
@@ -148,7 +165,7 @@ int APyramid::ContinueBlockDestructionCascade(FIntPoint TargetedBlockCoordinates
 				PyramidCoordinates.Remove(NextBlockCoordinates);
 				Block->Destroy();
 				currentSum += LastFibonacciValue + SecondLastFibonacciValue;
-				return APyramid::ContinueBlockDestructionCascade(NextBlockCoordinates, ColorToCompare, LastFibonacciValue + SecondLastFibonacciValue, LastFibonacciValue, currentSum);
+				APyramid::ContinueBlockDestructionCascade(NextBlockCoordinates, ColorToCompare, LastFibonacciValue + SecondLastFibonacciValue, LastFibonacciValue, currentSum);
 			}
 		}
 	}

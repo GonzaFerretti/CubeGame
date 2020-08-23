@@ -26,8 +26,8 @@ void ABlock::SetCubeColor(FLinearColor Color)
 	CubeColor = Color;
 	if (HasAuthority())
 	{
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, GetActorLabel() + TEXT("Color was set on listen server's host"));
+		/*if (GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, GetActorLabel() + TEXT("Color was set on listen server's host"));*/
 		ABlock::CreateAndSetTintedMaterial();
 	}
 }
@@ -36,12 +36,6 @@ void ABlock::InitializeBlock(APyramid* _ParentPyramid, FIntPoint _CurrentCoordin
 {
 	ParentPyramid = _ParentPyramid;
 	CurrentPyramidCoordinates = _CurrentCoordinates;
-}
-
-void ABlock::StartBlockDestruction()
-{
-	ParentPyramid->StartBlockCascadeDestruction(CurrentPyramidCoordinates, CubeColor);
-	Destroy();
 }
 
 FLinearColor ABlock::GetColor()
@@ -54,12 +48,13 @@ void ABlock::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetime
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ABlock, CubeMaterial);
 	DOREPLIFETIME(ABlock, CubeColor);
+	DOREPLIFETIME(ABlock, CurrentPyramidCoordinates);
 }
 
 void ABlock::OnRep_CubeColorClientUpdate()
 {
-	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, GetActorLabel() + TEXT("Color was updated!"));
+	/*if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, GetActorLabel() + TEXT("Color was updated!"));*/
 	ABlock::CreateAndSetTintedMaterial();
 }
 
@@ -97,6 +92,11 @@ void ABlock::MoveTowardsFallPosition(float DeltaTime)
 bool ABlock::IsFalling()
 {
 	return bIsFalling;
+}
+
+FIntPoint ABlock::GetPyramidCoordinates()
+{
+	return CurrentPyramidCoordinates;
 }
 
 // Called every frame

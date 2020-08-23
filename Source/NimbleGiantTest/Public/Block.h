@@ -25,7 +25,7 @@ protected:
 	FLinearColor CubeColor;
 	UPROPERTY(EditAnywhere, Category = Visual, Replicated)
 	UMaterialInstanceDynamic* CubeMaterial;
-	UPROPERTY(EditAnywhere, Category = "Pyramid Data")
+	UPROPERTY(EditAnywhere, Category = "Pyramid Data", Replicated)
 	FIntPoint CurrentPyramidCoordinates;
 	UPROPERTY(EditAnywhere, Category = "Pyramid Data")
 	APyramid* ParentPyramid;
@@ -49,10 +49,10 @@ public:
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	void SetCubeColor(FLinearColor Color);
 	void InitializeBlock(APyramid* _ParentPyramid, FIntPoint _CurrentCoordinates);
-	void StartBlockDestruction();
 	void SetBlockFall(FVector TargetPosition, FIntPoint TargetCoordinates);
 	UFUNCTION()
 	void OnRep_CubeColorClientUpdate();
 	FLinearColor GetColor();
 	bool IsFalling();
+	FIntPoint GetPyramidCoordinates();
 };

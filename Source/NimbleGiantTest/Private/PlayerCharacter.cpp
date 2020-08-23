@@ -9,6 +9,8 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
 #include "Block.h"
+#include "CubeGameState.h"
+#include "Pyramid.h"
 #include "GameFramework/InputSettings.h"
 
 // Sets default values
@@ -96,7 +98,6 @@ void APlayerCharacter::Shoot()
 		DrawDebugLine(GetWorld(), RayStartPosition, EndPosition, FColor::Green, false, 1, 0, 1);
 	}
 
-
 	bool IsHit = GetWorld()->LineTraceSingleByChannel(HitResult, RayStartPosition, EndPosition, ECC_Visibility, CollisionParams);
 	if (IsHit)
 	{
@@ -104,10 +105,13 @@ void APlayerCharacter::Shoot()
 		if (HitObjectIsBlock)
 		{
 			ABlock* HitBlock = ((ABlock*)HitResult.GetActor());
-			if (!HitBlock->IsFalling())
+			FIntPoint BlockCoordinates = HitBlock->GetPyramidCoordinates();
+			FLinearColor BlockColor = HitBlock->GetColor();
+			GetWorld()->GetGameState<ACubeGameState>()->GetPyramid()->StartBlockCascadeDestruction(BlockCoordinates, BlockColor);
+			/*if (!HitBlock->IsFalling())
 			{
-				HitBlock->StartBlockDestruction();
-			}
+				
+			}*/
 		}
 	}
 }

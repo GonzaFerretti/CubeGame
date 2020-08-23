@@ -8,6 +8,8 @@
 #include "Pyramid.generated.h"
 
 class ABlock;
+class ACubeGameState;
+class APlayerState;
 
 UCLASS()
 class NIMBLEGIANTTEST_API APyramid : public AActor
@@ -37,6 +39,8 @@ protected:
 	int PyramidSize;
 	UPROPERTY(EditAnywhere, Category = "Block Settings")
 	TArray<FIntPoint> DirectionsToCheck;
+	UPROPERTY(EditAnywhere, Category = "Game State")
+	ACubeGameState* GameState;
 	void EnableFallForFloatingBlocks();
 	bool IsTheBlockFloating(FIntPoint BlockCoordinates);
 	FIntPoint FindTargetCoordinateForFallingBlock(FIntPoint FallingBlockCoordinates);

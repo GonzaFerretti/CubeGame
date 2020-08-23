@@ -36,6 +36,9 @@ protected:
 	UCameraComponent* FollowCamera;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
 	USkeletalMeshComponent* ViewArmsMesh;
+	TSubclassOf<class UUserWidget> InGameUIClass;
+	/*UPROPERTY(BlueprintReadWrite, Category = "UI")
+	class UInGameUI* InGameUI;*/
 
 public:	
 	// Called every frame
