@@ -11,6 +11,7 @@
 #include "Block.h"
 #include "CubeGameState.h"
 #include "Pyramid.h"
+#include "Blueprint/UserWidget.h"
 #include "GameFramework/InputSettings.h"
 
 // Sets default values
@@ -37,6 +38,13 @@ APlayerCharacter::APlayerCharacter()
 	ViewArmsMesh->CastShadow = false;
 	ViewArmsMesh->SetRelativeRotation(FRotator(1.9f, -19.19f, 5.2f));
 	ViewArmsMesh->SetRelativeLocation(FVector(-0.5f, -4.4f, -155.7f));
+
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		ScoreBoardUI = CreateWidget(World, ScoreBoardUIBp);
+		ScoreBoardUI->AddToViewport();
+	}
 }
 
 // Called when the game starts or when spawned
@@ -107,7 +115,7 @@ void APlayerCharacter::Shoot()
 			ABlock* HitBlock = ((ABlock*)HitResult.GetActor());
 			FIntPoint BlockCoordinates = HitBlock->GetPyramidCoordinates();
 			FLinearColor BlockColor = HitBlock->GetColor();
-			GetWorld()->GetGameState<ACubeGameState>()->GetPyramid()->StartBlockCascadeDestruction(BlockCoordinates, BlockColor);
+			GetWorld()->GetGameState<ACubeGameState>()->GetPyramid()->StartBlockCascadeDestruction(BlockCoordinates, BlockColor, GetPlayerState());
 			/*if (!HitBlock->IsFalling())
 			{
 				

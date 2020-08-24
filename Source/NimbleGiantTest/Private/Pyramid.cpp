@@ -18,14 +18,14 @@ void APyramid::BeginPlay()
 	APyramid::GeneratePyramid(7, 101);
 	if (GEngine)
 	{
-		FString IsNameStable = IsNameStableForNetworking() ? "True" : "False";
+		/*FString IsNameStable = IsNameStableForNetworking() ? "True" : "False";
 		FString IsSupported = IsSupportedForNetworking() ? "True" : "False";
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Is Name Stable:") + IsNameStable);
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Is Supported:") + IsSupported);
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Is Supported:") + IsSupported);*/
 	}
 
 	GameState = World->GetGameState<ACubeGameState>();
-	GameState->SetPyramid(this);
+	GameState->SetPyramidReference(this);
 }
 
 void APyramid::Tick(float DeltaTime)
@@ -36,9 +36,6 @@ void APyramid::Tick(float DeltaTime)
 void APyramid::EnableFallForFloatingBlocks()
 {
 	// Sorting the coordinates by its level allows me to remove the falling blocks on the lower levels first.
-	PyramidCoordinates.KeySort([](FIntPoint A, FIntPoint B) {
-		return A.Y < B.Y;
-		});
 	for (TPair<FIntPoint, ABlock*> BlockData : PyramidCoordinates)
 	{
 		if (IsTheBlockFloating(BlockData.Key))
@@ -104,6 +101,10 @@ void APyramid::GeneratePyramid(int Height, float Padding)
 		APyramid::GeneratePyramidLevel(i, Padding, Height);
 	}
 	PyramidSize = Height;
+
+	PyramidCoordinates.KeySort([](FIntPoint A, FIntPoint B) {
+		return A.Y < B.Y;
+		});
 }
 
 void APyramid::GeneratePyramidLevel(int Level, float Padding, int LevelAmount)
@@ -132,15 +133,15 @@ void APyramid::GeneratePyramidLevel(int Level, float Padding, int LevelAmount)
 	}
 }
 
-void APyramid::StartBlockCascadeDestruction(FIntPoint TargetedBlockCoordinates, FLinearColor ColorToCompare, )
+void APyramid::StartBlockCascadeDestruction(FIntPoint TargetedBlockCoordinates, FLinearColor ColorToCompare, APlayerState* PlayerState)
 {
 	ABlock* StartingCascadeBlock = PyramidCoordinates[TargetedBlockCoordinates];
 	PyramidCoordinates.Remove(TargetedBlockCoordinates);
 	StartingCascadeBlock->Destroy();
 
-	int pointsSum = APyramid::ContinueBlockDestructionCascade(TargetedBlockCoordinates, ColorToCompare, 1, 0, 0);
+	int PointSum = APyramid::ContinueBlockDestructionCascade(TargetedBlockCoordinates, ColorToCompare, 1, 0, 0);
 
-
+	GameState->AddToPlayerScore(PlayerState, PointSum);
 
 	APyramid::EnableFallForFloatingBlocks();
 }
@@ -165,7 +166,7 @@ int APyramid::ContinueBlockDestructionCascade(FIntPoint TargetedBlockCoordinates
 				PyramidCoordinates.Remove(NextBlockCoordinates);
 				Block->Destroy();
 				currentSum += LastFibonacciValue + SecondLastFibonacciValue;
-				APyramid::ContinueBlockDestructionCascade(NextBlockCoordinates, ColorToCompare, LastFibonacciValue + SecondLastFibonacciValue, LastFibonacciValue, currentSum);
+				currentSum = APyramid::ContinueBlockDestructionCascade(NextBlockCoordinates, ColorToCompare, LastFibonacciValue + SecondLastFibonacciValue, LastFibonacciValue, currentSum);
 			}
 		}
 	}

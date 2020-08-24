@@ -49,6 +49,6 @@ protected:
 public:	
 	virtual void Tick(float DeltaTime) override;
 	void GeneratePyramid(int Height, float Padding);
-	void StartBlockCascadeDestruction(FIntPoint TargetedBlockCoordinates, FLinearColor ColorToCompare);
+	void StartBlockCascadeDestruction(FIntPoint TargetedBlockCoordinates, FLinearColor ColorToCompare, APlayerState* PlayerState);
 	void AddCubeToPyramidCoordinates(ABlock* BlockToAdd, FIntPoint Coordinates);
 };

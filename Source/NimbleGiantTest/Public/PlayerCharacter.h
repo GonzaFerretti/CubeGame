@@ -10,10 +10,9 @@
 #include "Components/InputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
-
-#include "Blueprint/UserWidget.h"
-
 #include "PlayerCharacter.generated.h"
+
+class UUserWidget;
 
 UCLASS()
 class NIMBLEGIANTTEST_API APlayerCharacter : public ACharacter
@@ -36,9 +35,11 @@ protected:
 	UCameraComponent* FollowCamera;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
 	USkeletalMeshComponent* ViewArmsMesh;
-	TSubclassOf<class UUserWidget> InGameUIClass;
-	/*UPROPERTY(BlueprintReadWrite, Category = "UI")
-	class UInGameUI* InGameUI;*/
+
+	TSubclassOf<class UUserWidget> ScoreBoardUIBp;
+
+	UPROPERTY(BlueprintReadWrite, Category = "UI")
+	class UUserWidget* ScoreBoardUI;
 
 public:	
 	// Called every frame

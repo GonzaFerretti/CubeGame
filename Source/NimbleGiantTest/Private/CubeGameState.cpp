@@ -2,11 +2,18 @@
 
 #include "CubeGameState.h"
 #include "Net/UnrealNetwork.h"
+#include "GameFramework/PlayerState.h"
 #include "Pyramid.h"
 
-void ACubeGameState::SetPyramid(APyramid* Pyramid)
+void ACubeGameState::SetPyramidReference(APyramid* Pyramid)
 {
 	CubePyramid = Pyramid;
+}
+
+void ACubeGameState::AddToPlayerScore(APlayerState* PlayerState, int ScoreToAdd)
+{
+	PlayerState->SetScore(PlayerState->GetScore() + ScoreToAdd);
+	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::White, FString::FromInt(ScoreToAdd) + PlayerState->GetActorLabel());
 }
 
 void ACubeGameState::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const

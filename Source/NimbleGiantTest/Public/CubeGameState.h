@@ -17,7 +17,8 @@ class NIMBLEGIANTTEST_API ACubeGameState : public AGameState
 	TSoftObjectPtr<APyramid> CubePyramid;
 
 	public:
-	void SetPyramid(APyramid* Pyramid);
+	void SetPyramidReference(APyramid* Pyramid);
+	void AddToPlayerScore(APlayerState* PlayerState, int ScoreToAdd);
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	APyramid* GetPyramid();
 };
