@@ -12,7 +12,7 @@
 #include "GameFramework/Controller.h"
 #include "PlayerCharacter.generated.h"
 
-class UUserWidget;
+class UScoreboardWidget;
 
 UCLASS()
 class NIMBLEGIANTTEST_API APlayerCharacter : public ACharacter
@@ -36,10 +36,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
 	USkeletalMeshComponent* ViewArmsMesh;
 
-	TSubclassOf<class UUserWidget> ScoreBoardUIBp;
+	UPROPERTY(EditAnywhere, Category = "UI")
+	TSubclassOf<UScoreboardWidget> ScoreBoardUIBp;
 
-	UPROPERTY(BlueprintReadWrite, Category = "UI")
-	class UUserWidget* ScoreBoardUI;
+	UScoreboardWidget* ScoreBoardUI;
 
 public:	
 	// Called every frame

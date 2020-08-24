@@ -6,12 +6,13 @@
 #include "Camera/CameraComponent.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/PlayerState.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
 #include "Block.h"
 #include "CubeGameState.h"
 #include "Pyramid.h"
-#include "Blueprint/UserWidget.h"
+#include "ScoreboardWidget.h"
 #include "GameFramework/InputSettings.h"
 
 // Sets default values
@@ -39,18 +40,19 @@ APlayerCharacter::APlayerCharacter()
 	ViewArmsMesh->SetRelativeRotation(FRotator(1.9f, -19.19f, 5.2f));
 	ViewArmsMesh->SetRelativeLocation(FVector(-0.5f, -4.4f, -155.7f));
 
-	UWorld* World = GetWorld();
-	if (World)
-	{
-		ScoreBoardUI = CreateWidget(World, ScoreBoardUIBp);
-		ScoreBoardUI->AddToViewport();
-	}
 }
 
 // Called when the game starts or when spawned
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		ScoreBoardUI = CreateWidget<UScoreboardWidget>(GetWorld(), ScoreBoardUIBp);
+		ScoreBoardUI->AddToViewport();
+		ScoreBoardUI->InitializeScoreUI(World->GetGameState()->PlayerArray);
+	}
 }
 
 // Called every frame
