@@ -13,7 +13,6 @@
 #include "CubeGameState.h"
 #include "Pyramid.h"
 #include "ScoreboardWidget.h"
-#include "PlayerCharacterState.h"
 #include "GameFramework/InputSettings.h"
 
 // Sets default values
