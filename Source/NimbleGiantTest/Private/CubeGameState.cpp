@@ -10,10 +10,12 @@ void ACubeGameState::SetPyramidReference(APyramid* Pyramid)
 	CubePyramid = Pyramid;
 }
 
-void ACubeGameState::AddToPlayerScore(APlayerState* PlayerState, int ScoreToAdd)
+void ACubeGameState::AddToPlayerScore(APlayerState* PlayerStateClientSide, int ScoreToAdd)
 {
-	PlayerState->SetScore(PlayerState->GetScore() + ScoreToAdd);
-	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::White, FString::FromInt(ScoreToAdd) + PlayerState->GetActorLabel());
+	APlayerState* PlayerStateServerSide  = (PlayerArray.FindByPredicate([PlayerStateClientSide](APlayerState* A) {
+		return A->GetActorLabel() == PlayerStateClientSide->GetActorLabel();
+		}))[0];
+		PlayerStateServerSide->SetScore(PlayerStateServerSide->GetScore() + ScoreToAdd);
 }
 
 void ACubeGameState::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const

@@ -13,6 +13,7 @@
 #include "CubeGameState.h"
 #include "Pyramid.h"
 #include "ScoreboardWidget.h"
+#include "PlayerCharacterState.h"
 #include "GameFramework/InputSettings.h"
 
 // Sets default values
@@ -51,7 +52,6 @@ void APlayerCharacter::BeginPlay()
 	{
 		ScoreBoardUI = CreateWidget<UScoreboardWidget>(GetWorld(), ScoreBoardUIBp);
 		ScoreBoardUI->AddToViewport();
-		ScoreBoardUI->InitializeScoreUI(World->GetGameState()->PlayerArray);
 	}
 }
 
@@ -59,7 +59,11 @@ void APlayerCharacter::BeginPlay()
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		ScoreBoardUI->UpdateUI(World->GetGameState()->PlayerArray);
+	}
 }
 
 void APlayerCharacter::MoveForward(float Axis)

@@ -19,10 +19,15 @@ class NIMBLEGIANTTEST_API UScoreboardWidget : public UUserWidget
 	protected:
 	UPROPERTY(EditAnywhere)
 	UCanvasPanel* Panel;
+	UPROPERTY(EditAnywhere)
+	float Spacing;
+	UPROPERTY(EditAnywhere)
+	float FontSize;
 
 	UPROPERTY(VisibleAnywhere)
 	TMap<APlayerState*, UTextBlock*> PlayersScores;
 
 	public:
 	void InitializeScoreUI(TArray<APlayerState*> PlayerStates);
+	void UpdateUI(TArray<APlayerState*> PlayerStates);
 };
