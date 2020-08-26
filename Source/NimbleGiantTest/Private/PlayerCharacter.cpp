@@ -15,6 +15,7 @@
 #include "ScoreboardWidget.h"
 #include "GameFramework/InputSettings.h"
 #include "GameFramework/PlayerController.h"
+#include "CubeGamePlayerController.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -117,7 +118,7 @@ void APlayerCharacter::Shoot()
 
 void APlayerCharacter::SetupClientSideMatchEnd_Implementation()
 {
-	/*if (InputComponent)
+	if (InputComponent)
 	{
 		for (int i = 0; i < InputComponent->GetNumActionBindings(); i++)
 		{
@@ -127,7 +128,7 @@ void APlayerCharacter::SetupClientSideMatchEnd_Implementation()
 
 		InputComponent->BindAction("SetReady", IE_Pressed, this, &APlayerCharacter::SetReadyForNextMatch);
 	}
-	ScoreBoardUI->ShowGameOver();*/
+	((ACubeGamePlayerController*)GetController())->ScoreBoardUI->ShowGameOver();
 }
 
 void APlayerCharacter::SetReadyForNextMatch()

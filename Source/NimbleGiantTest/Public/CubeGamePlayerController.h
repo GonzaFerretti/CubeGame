@@ -22,5 +22,7 @@ class NIMBLEGIANTTEST_API ACubeGamePlayerController : public APlayerController
 
 	UPROPERTY(EditAnywhere, Category = "UI")
 	TSubclassOf<UScoreboardWidget> ScoreBoardUIBp;
+
+	public:
 	UScoreboardWidget* ScoreBoardUI;
 };
