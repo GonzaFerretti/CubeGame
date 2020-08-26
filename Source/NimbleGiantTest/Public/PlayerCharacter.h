@@ -31,21 +31,23 @@ protected:
 	void TurnAtRate(float Rate);
 	void LookUpAtRate(float Rate);
 	void Shoot();
+	void SetReadyForNextMatch();
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
 	USkeletalMeshComponent* ViewArmsMesh;
 
-	UPROPERTY(EditAnywhere, Category = "UI")
-	TSubclassOf<UScoreboardWidget> ScoreBoardUIBp;
-
-	UScoreboardWidget* ScoreBoardUI;
+	
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	UFUNCTION(Client, Reliable)
+	void SetupClientSideMatchEnd();
+	void SetupClientSideMatchEnd_Implementation();
 	UPROPERTY(EditAnywhere, Category = "Weapon")
 	float MaximumShotRange;
 	UPROPERTY(EditAnywhere, Category = "Camera Movement")

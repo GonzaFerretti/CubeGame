@@ -2,6 +2,8 @@
 
 #include "Pyramid.h"
 #include "CubeGameState.h"
+#include "PlayerCharacter.h"
+#include "GameFramework/PlayerState.h"
 #include "Block.h"
 
 // Sets default values
@@ -142,6 +144,14 @@ void APyramid::StartBlockCascadeDestruction(FIntPoint TargetedBlockCoordinates, 
 	int PointSum = APyramid::ContinueBlockDestructionCascade(TargetedBlockCoordinates, ColorToCompare, 1, 0, 0);
 
 	GameState->AddToPlayerScore(PlayerState, PointSum);
+
+	if (PyramidCoordinates.Num() == 0)
+	{
+		for (APlayerState* PlayerState : GameState->PlayerArray)
+		{
+			((APlayerCharacter*)PlayerState->GetPawn())->SetupClientSideMatchEnd();
+		}
+	}
 
 	APyramid::EnableFallForFloatingBlocks();
 }

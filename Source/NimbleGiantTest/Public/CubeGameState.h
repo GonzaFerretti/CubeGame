@@ -20,5 +20,6 @@ class NIMBLEGIANTTEST_API ACubeGameState : public AGameState
 	void SetPyramidReference(APyramid* Pyramid);
 	void AddToPlayerScore(APlayerState* PlayerState, int ScoreToAdd);
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	void StartGameOverPhase();
 	APyramid* GetPyramid();
 };

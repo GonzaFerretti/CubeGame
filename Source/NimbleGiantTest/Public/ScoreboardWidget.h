@@ -23,11 +23,20 @@ class NIMBLEGIANTTEST_API UScoreboardWidget : public UUserWidget
 	float Spacing;
 	UPROPERTY(EditAnywhere)
 	float FontSize;
+	UPROPERTY(EditAnywhere)
+	FVector2D ScoreBoardPosition;
+	APlayerState* OwnerPlayer;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* GameOverText;
+	void UpdatePlayerScoreText(APlayerState* PlayerState, int Score, UTextBlock* PlayerScoreText);
 
 	UPROPERTY(VisibleAnywhere)
-	TMap<APlayerState*, UTextBlock*> PlayersScores;
+	TMap<APlayerState*, UTextBlock*> PlayerScores;
 
 	public:
 	void InitializeScoreUI(TArray<APlayerState*> PlayerStates);
 	void UpdateUI(TArray<APlayerState*> PlayerStates);
+	void SetPlayerReference(APlayerState* PlayerState);
+	bool IsPlayerReferenceNull();
+	void ShowGameOver();
 };

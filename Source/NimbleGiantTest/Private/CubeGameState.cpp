@@ -3,6 +3,7 @@
 #include "CubeGameState.h"
 #include "Net/UnrealNetwork.h"
 #include "GameFramework/PlayerState.h"
+#include "PlayerCharacter.h"
 #include "Pyramid.h"
 
 void ACubeGameState::SetPyramidReference(APyramid* Pyramid)

@@ -14,11 +14,12 @@
 #include "Pyramid.h"
 #include "ScoreboardWidget.h"
 #include "GameFramework/InputSettings.h"
+#include "GameFramework/PlayerController.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
 {
- 	
+
 	PrimaryActorTick.bCanEverTick = true;
 	UCapsuleComponent* _CapsuleComponent = GetCapsuleComponent();
 	_CapsuleComponent->InitCapsuleSize(55.f, 96.0f);
@@ -26,12 +27,12 @@ APlayerCharacter::APlayerCharacter()
 	GetCharacterMovement()->JumpZVelocity = 600;
 	GetCharacterMovement()->AirControl = 0.02f;
 
-	
+
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("CharacterCamera"));
 	FollowCamera->SetupAttachment(GetCapsuleComponent());
-	FollowCamera->SetRelativeLocation(FVector(-39.56f,1.75f, 64));
+	FollowCamera->SetRelativeLocation(FVector(-39.56f, 1.75f, 64));
 	FollowCamera->bUsePawnControlRotation = true;
-	
+
 	ViewArmsMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ArmsMesh"));
 	ViewArmsMesh->SetOnlyOwnerSee(true);
 	ViewArmsMesh->SetupAttachment(FollowCamera);
@@ -46,23 +47,12 @@ APlayerCharacter::APlayerCharacter()
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	UWorld* World = GetWorld();
-	if (World)
-	{
-		ScoreBoardUI = CreateWidget<UScoreboardWidget>(GetWorld(), ScoreBoardUIBp);
-		ScoreBoardUI->AddToViewport();
-	}
 }
 
 // Called every frame
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	UWorld* World = GetWorld();
-	if (World)
-	{
-		ScoreBoardUI->UpdateUI(World->GetGameState()->PlayerArray);
-	}
 }
 
 void APlayerCharacter::MoveForward(float Axis)
@@ -121,12 +111,28 @@ void APlayerCharacter::Shoot()
 			FIntPoint BlockCoordinates = HitBlock->GetPyramidCoordinates();
 			FLinearColor BlockColor = HitBlock->GetColor();
 			GetWorld()->GetGameState<ACubeGameState>()->GetPyramid()->StartBlockCascadeDestruction(BlockCoordinates, BlockColor, GetPlayerState());
-			/*if (!HitBlock->IsFalling())
-			{
-				
-			}*/
 		}
 	}
+}
+
+void APlayerCharacter::SetupClientSideMatchEnd_Implementation()
+{
+	/*if (InputComponent)
+	{
+		for (int i = 0; i < InputComponent->GetNumActionBindings(); i++)
+		{
+			InputComponent->RemoveActionBindingForHandle(InputComponent->GetActionBinding(0).GetHandle());
+		}
+		InputComponent->AxisBindings = TArray<FInputAxisBinding>();
+
+		InputComponent->BindAction("SetReady", IE_Pressed, this, &APlayerCharacter::SetReadyForNextMatch);
+	}
+	ScoreBoardUI->ShowGameOver();*/
+}
+
+void APlayerCharacter::SetReadyForNextMatch()
+{
+
 }
 
 // Called to bind functionality to input
