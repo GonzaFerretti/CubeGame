@@ -34,13 +34,22 @@ APlayerCharacter::APlayerCharacter()
 	FollowCamera->SetRelativeLocation(FVector(-39.56f, 1.75f, 64));
 	FollowCamera->bUsePawnControlRotation = true;
 
+	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BodyMesh"));
+	BodyMesh->SetupAttachment(GetCapsuleComponent());
+
 	ViewArmsMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ArmsMesh"));
-	ViewArmsMesh->SetOnlyOwnerSee(true);
+	ViewArmsMesh->SetOnlyOwnerSee(false);
 	ViewArmsMesh->SetupAttachment(FollowCamera);
 	ViewArmsMesh->bCastDynamicShadow = false;
 	ViewArmsMesh->CastShadow = false;
 	ViewArmsMesh->SetRelativeRotation(FRotator(1.9f, -19.19f, 5.2f));
 	ViewArmsMesh->SetRelativeLocation(FVector(-0.5f, -4.4f, -155.7f));
+
+	GunMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Gun"));
+	GunMesh->SetOnlyOwnerSee(false);			
+	GunMesh->bCastDynamicShadow = false;
+	GunMesh->CastShadow = false;
+	GunMesh->SetupAttachment(ViewArmsMesh);
 
 }
 
@@ -48,6 +57,8 @@ APlayerCharacter::APlayerCharacter()
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	GunMesh->AttachToComponent(ViewArmsMesh, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint"));
 }
 
 // Called every frame
