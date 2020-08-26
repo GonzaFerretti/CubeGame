@@ -32,6 +32,8 @@ protected:
 	void LookUpAtRate(float Rate);
 	void Shoot();
 	void SetReadyForNextMatch();
+	UFUNCTION()
+	void ShowFinalScoreBoard();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;

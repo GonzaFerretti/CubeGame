@@ -147,9 +147,9 @@ void APyramid::StartBlockCascadeDestruction(FIntPoint TargetedBlockCoordinates, 
 
 	if (PyramidCoordinates.Num() == 0)
 	{
-		for (APlayerState* PlayerState : GameState->PlayerArray)
+		for (APlayerState* _PlayerState : GameState->PlayerArray)
 		{
-			((APlayerCharacter*)PlayerState->GetPawn())->SetupClientSideMatchEnd();
+			((APlayerCharacter*)_PlayerState->GetPawn())->SetupClientSideMatchEnd();
 		}
 	}
 

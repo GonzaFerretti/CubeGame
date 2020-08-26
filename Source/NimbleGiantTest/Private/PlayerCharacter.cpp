@@ -128,7 +128,14 @@ void APlayerCharacter::SetupClientSideMatchEnd_Implementation()
 
 		InputComponent->BindAction("SetReady", IE_Pressed, this, &APlayerCharacter::SetReadyForNextMatch);
 	}
-	((ACubeGamePlayerController*)GetController())->ScoreBoardUI->ShowGameOver();
+	FTimerHandle WaitForScoreTimerHandle;
+	GetWorldTimerManager().SetTimer(WaitForScoreTimerHandle, this, &APlayerCharacter::ShowFinalScoreBoard, 1.5f, false);
+	
+}
+
+void APlayerCharacter::ShowFinalScoreBoard()
+{
+	((ACubeGamePlayerController*)GetController())->ScoreBoardUI->ShowGameOver(GetWorld()->GetGameState()->PlayerArray);
 }
 
 void APlayerCharacter::SetReadyForNextMatch()

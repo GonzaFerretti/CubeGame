@@ -28,15 +28,17 @@ class NIMBLEGIANTTEST_API UScoreboardWidget : public UUserWidget
 	APlayerState* OwnerPlayer;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* GameOverText;
+	bool bGameHasEnded;
 	void UpdatePlayerScoreText(APlayerState* PlayerState, int Score, UTextBlock* PlayerScoreText);
+	void UpdateOrCreateScoreUIElement(APlayerState* PlayerState, int ScoreBoardIndex, bool bShouldCreate);
+	void UpdateAndShowFinalScoreBoard(TArray<APlayerState*> PlayerStates);
 
 	UPROPERTY(VisibleAnywhere)
 	TMap<APlayerState*, UTextBlock*> PlayerScores;
 
 	public:
-	void InitializeScoreUI(TArray<APlayerState*> PlayerStates);
-	void UpdateUI(TArray<APlayerState*> PlayerStates);
+	void UpdateInMatchScoreBoard(APlayerState* PlayerState);
 	void SetPlayerReference(APlayerState* PlayerState);
 	bool IsPlayerReferenceNull();
-	void ShowGameOver();
+	void ShowGameOver(TArray<APlayerState*> PlayerStates);
 };

@@ -22,20 +22,21 @@ void ACubeGamePlayerController::PlayerTick(float DeltaTime)
 	{
 		if ((ACubeGamePlayerController*)World->GetFirstPlayerController() != this) return;
 		AGameStateBase* GameState = World->GetGameState();
+		APlayerState* _PlayerState = GetPlayerState<APlayerState>();
 		if (!ScoreBoardUI)
 		{
 			ScoreBoardUI = CreateWidget<UScoreboardWidget>(World, ScoreBoardUIBp);
 			ScoreBoardUI->AddToViewport();
 		}
-		else if (GetPlayerState<APlayerState>())
+		else if (_PlayerState)
 		{
 			if (ScoreBoardUI->IsPlayerReferenceNull())
 			{
-				ScoreBoardUI->SetPlayerReference(GetPlayerState<APlayerState>());
+				ScoreBoardUI->SetPlayerReference(_PlayerState);
 			}
 			if (GameState)
 			{
-				ScoreBoardUI->UpdateUI(GameState->PlayerArray);
+				ScoreBoardUI->UpdateInMatchScoreBoard(_PlayerState);
 			}
 		}
 	}

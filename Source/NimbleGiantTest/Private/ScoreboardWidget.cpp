@@ -14,43 +14,43 @@ void UScoreboardWidget::UpdatePlayerScoreText(APlayerState* PlayerState, int Sco
 	PlayerScoreText->SetText(FText::FromString(PlayerLabel + TEXT(" ") + FString::FromInt(Score)));
 }
 
-void UScoreboardWidget::InitializeScoreUI(TArray<APlayerState*> PlayerStates)
+void UScoreboardWidget::UpdateOrCreateScoreUIElement(APlayerState* PlayerState, int ScoreBoardIndex, bool bShouldCreate)
 {
-	int i = PlayerScores.Num();
-	for (APlayerState* PlayerState : PlayerStates)
+	UTextBlock* PlayerScoreText;
+	if (bShouldCreate)
 	{
-		UTextBlock* PlayerScoreText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), FName(FString::FromInt(PlayerState->GetPlayerId())));
+		PlayerScoreText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), FName(FString::FromInt(PlayerState->GetPlayerId())));
 		UPanelWidget* RootWidget = Cast<UPanelWidget>(GetRootWidget());
 		RootWidget->AddChild(PlayerScoreText);
-		UCanvasPanelSlot* PanelSlot = (UCanvasPanelSlot*)PlayerScoreText->Slot;
-		PanelSlot->SetPosition(ScoreBoardPosition + FVector2D(0, Spacing * i));
-		UScoreboardWidget::UpdatePlayerScoreText(PlayerState, 0, PlayerScoreText);
 		PlayerScores.Add(PlayerState, PlayerScoreText);
-		i++;
 	}
+
+	PlayerScoreText = PlayerScores[PlayerState];
+	UCanvasPanelSlot* PanelSlot = (UCanvasPanelSlot*)PlayerScoreText->Slot;
+	PanelSlot->SetPosition(ScoreBoardPosition + FVector2D(0, Spacing * ScoreBoardIndex));
+	UpdatePlayerScoreText(PlayerState, PlayerState->GetScore(), PlayerScoreText);
 }
 
 
-void UScoreboardWidget::UpdateUI(TArray<APlayerState*> PlayerStates)
+void UScoreboardWidget::UpdateAndShowFinalScoreBoard(TArray<APlayerState*> PlayerStates)
 {
-	if (PlayerScores.Num() != PlayerStates.Num())
+	Algo::Sort(PlayerStates, ([](APlayerState* A, APlayerState* B) {
+		return A->GetScore() >= B->GetScore();
+		}));
+	for (size_t i = 0; i < PlayerStates.Num(); i++)
 	{
-		TArray<APlayerState*> NewPlayers = PlayerStates;
-		for (APlayerState* PlayerState : PlayerStates)
-		{
-			for (TPair<APlayerState*, UTextBlock*> PlayerScore : PlayerScores)
-			{
-				if (PlayerState->GetPlayerId() == PlayerScore.Key->GetPlayerId())
-				{
-					NewPlayers.Remove(PlayerState);
-				}
-			}
-		}
-		InitializeScoreUI(NewPlayers);
+		APlayerState* PlayerState = PlayerStates[i];
+		bool bIsOwnerPlayer = PlayerState->GetPlayerId() != OwnerPlayer->GetPlayerId();
+		UpdateOrCreateScoreUIElement(PlayerState, i, bIsOwnerPlayer);
 	}
-	for (APlayerState* PlayerState : PlayerStates)
+}
+
+void UScoreboardWidget::UpdateInMatchScoreBoard(APlayerState* PlayerState)
+{
+	if (!bGameHasEnded)
 	{
-		UScoreboardWidget::UpdatePlayerScoreText(PlayerState, PlayerState->GetScore(), PlayerScores[PlayerState]);
+		bool bThisPlayerScoreWasCreated = PlayerScores.Contains(PlayerState);
+		UScoreboardWidget::UpdateOrCreateScoreUIElement(PlayerState, 0, !bThisPlayerScoreWasCreated);
 	}
 }
 
@@ -64,7 +64,9 @@ bool UScoreboardWidget::IsPlayerReferenceNull()
 	return (!OwnerPlayer);
 }
 
-void UScoreboardWidget::ShowGameOver()
+void UScoreboardWidget::ShowGameOver(TArray<APlayerState*> PlayerStates)
 {
 	GameOverText->SetColorAndOpacity(FSlateColor(FLinearColor(1, 1, 1, 1)));
+	bGameHasEnded = true;
+	UScoreboardWidget::UpdateAndShowFinalScoreBoard(PlayerStates);
 }
