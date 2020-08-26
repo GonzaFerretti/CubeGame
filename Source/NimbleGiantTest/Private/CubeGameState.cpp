@@ -14,7 +14,7 @@ void ACubeGameState::SetPyramidReference(APyramid* Pyramid)
 void ACubeGameState::AddToPlayerScore(APlayerState* PlayerStateClientSide, int ScoreToAdd)
 {
 	APlayerState* PlayerStateServerSide  = (PlayerArray.FindByPredicate([PlayerStateClientSide](APlayerState* A) {
-		return A->GetActorLabel() == PlayerStateClientSide->GetActorLabel();
+		return A->GetPlayerId() == PlayerStateClientSide->GetPlayerId();
 		}))[0];
 		PlayerStateServerSide->SetScore(PlayerStateServerSide->GetScore() + ScoreToAdd);
 }

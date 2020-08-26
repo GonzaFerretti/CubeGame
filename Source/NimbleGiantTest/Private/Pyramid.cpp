@@ -141,7 +141,7 @@ void APyramid::StartBlockCascadeDestruction(FIntPoint TargetedBlockCoordinates, 
 	PyramidCoordinates.Remove(TargetedBlockCoordinates);
 	StartingCascadeBlock->Destroy();
 
-	int PointSum = APyramid::ContinueBlockDestructionCascade(TargetedBlockCoordinates, ColorToCompare, 1, 0, 0);
+	int PointSum = APyramid::ContinueBlockDestructionCascade(TargetedBlockCoordinates, ColorToCompare, 1, 0, 1);
 
 	GameState->AddToPlayerScore(PlayerState, PointSum);
 
