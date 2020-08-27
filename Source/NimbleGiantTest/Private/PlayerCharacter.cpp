@@ -151,7 +151,6 @@ void APlayerCharacter::ShowFinalScoreBoard()
 
 void APlayerCharacter::SetReadyForNextMatch()
 {
-
 }
 
 // Called to bind functionality to input
