@@ -18,13 +18,6 @@ void APyramid::BeginPlay()
 	Super::BeginPlay();
 	World = GetWorld();
 	APyramid::GeneratePyramid(7, 101);
-	if (GEngine)
-	{
-		/*FString IsNameStable = IsNameStableForNetworking() ? "True" : "False";
-		FString IsSupported = IsSupportedForNetworking() ? "True" : "False";
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Is Name Stable:") + IsNameStable);
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Is Supported:") + IsSupported);*/
-	}
 
 	GameState = World->GetGameState<ACubeGameState>();
 	GameState->SetPyramidReference(this);
@@ -37,12 +30,12 @@ void APyramid::Tick(float DeltaTime)
 
 void APyramid::EnableFallForFloatingBlocks()
 {
-	// Sorting the coordinates by its level allows me to remove the falling blocks on the lower levels first.
 	for (TPair<FIntPoint, ABlock*> BlockData : PyramidCoordinates)
 	{
 		if (IsTheBlockFloating(BlockData.Key))
 		{
-
+			// A quick, more performant method checks whether the fall should fall at all, first. Then, we calculate
+			// where should it fall to.
 			FIntPoint TargetCoordinates = APyramid::FindTargetCoordinateForFallingBlock(BlockData.Key);
 			if (TargetCoordinates != BlockData.Key)
 			{
@@ -64,6 +57,7 @@ bool APyramid::IsTheBlockFloating(FIntPoint BlockCoordinates)
 
 FIntPoint APyramid::FindTargetCoordinateForFallingBlock(FIntPoint FallingBlockCoordinates)
 {
+	// Iterates downwards through the pyramid until it finds a suitable block to fall to.
 	bool bHasFoundCoordinate = false;
 	FIntPoint CurrentBaseCoordinates = FallingBlockCoordinates;
 	while (!bHasFoundCoordinate)
@@ -85,6 +79,7 @@ FIntPoint APyramid::FindTargetCoordinateForFallingBlock(FIntPoint FallingBlockCo
 			}
 			else
 			{
+				// If the block is to fall to another block with the same offset, it will always check first the top-right block.
 				return (bBottomRightBlockExists ? BottomRightBlockCoordinates : BottomLeftBlockCoordinates);
 			}
 		}
@@ -103,7 +98,7 @@ void APyramid::GeneratePyramid(int Height, float Padding)
 		APyramid::GeneratePyramidLevel(i, Padding, Height);
 	}
 	PyramidSize = Height;
-
+	// This keysort allows for the fall check to go upwards, so there are no floating blocks afterwards.
 	PyramidCoordinates.KeySort([](FIntPoint A, FIntPoint B) {
 		return A.Y < B.Y;
 		});
@@ -141,6 +136,7 @@ void APyramid::StartBlockCascadeDestruction(FIntPoint TargetedBlockCoordinates, 
 	PyramidCoordinates.Remove(TargetedBlockCoordinates);
 	StartingCascadeBlock->Destroy();
 
+	// Doing Fibonacci directly in the main recursion should be more performant. As the first block was already destroyed, the sum is initiated at 1.
 	int PointSum = APyramid::ContinueBlockDestructionCascade(TargetedBlockCoordinates, ColorToCompare, 1, 0, 1);
 
 	GameState->AddToPlayerScore(PlayerState, PointSum);

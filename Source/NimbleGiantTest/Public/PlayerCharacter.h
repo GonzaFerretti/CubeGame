@@ -31,7 +31,6 @@ protected:
 	void TurnAtRate(float Rate);
 	void LookUpAtRate(float Rate);
 	void Shoot();
-	void SetReadyForNextMatch();
 	UFUNCTION()
 	void ShowFinalScoreBoard();
 

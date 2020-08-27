@@ -136,12 +136,9 @@ void APlayerCharacter::SetupClientSideMatchEnd_Implementation()
 			InputComponent->RemoveActionBindingForHandle(InputComponent->GetActionBinding(0).GetHandle());
 		}
 		InputComponent->AxisBindings = TArray<FInputAxisBinding>();
-
-		InputComponent->BindAction("SetReady", IE_Pressed, this, &APlayerCharacter::SetReadyForNextMatch);
 	}
 	FTimerHandle WaitForScoreTimerHandle;
 	GetWorldTimerManager().SetTimer(WaitForScoreTimerHandle, this, &APlayerCharacter::ShowFinalScoreBoard, 1.5f, false);
-	
 }
 
 void APlayerCharacter::ShowFinalScoreBoard()
@@ -149,11 +146,6 @@ void APlayerCharacter::ShowFinalScoreBoard()
 	((ACubeGamePlayerController*)GetController())->ScoreBoardUI->ShowGameOver(GetWorld()->GetGameState()->PlayerArray);
 }
 
-void APlayerCharacter::SetReadyForNextMatch()
-{
-}
-
-// Called to bind functionality to input
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);

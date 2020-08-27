@@ -24,10 +24,9 @@ void ABlock::BeginPlay()
 void ABlock::SetCubeColor(FLinearColor Color)
 {
 	CubeColor = Color;
+	// The blocks on the client server won't be able to create their materials until the Color is replicated. The server, however, already can.
 	if (HasAuthority())
 	{
-		/*if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, GetActorLabel() + TEXT("Color was set on listen server's host"));*/
 		ABlock::CreateAndSetTintedMaterial();
 	}
 }
@@ -46,15 +45,12 @@ FLinearColor ABlock::GetColor()
 void ABlock::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(ABlock, CubeMaterial);
 	DOREPLIFETIME(ABlock, CubeColor);
 	DOREPLIFETIME(ABlock, CurrentPyramidCoordinates);
 }
 
 void ABlock::OnRep_CubeColorClientUpdate()
 {
-	/*if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, GetActorLabel() + TEXT("Color was updated!"));*/
 	ABlock::CreateAndSetTintedMaterial();
 }
 

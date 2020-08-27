@@ -22,8 +22,6 @@ class NIMBLEGIANTTEST_API UScoreboardWidget : public UUserWidget
 	UPROPERTY(EditAnywhere)
 	float Spacing;
 	UPROPERTY(EditAnywhere)
-	float FontSize;
-	UPROPERTY(EditAnywhere)
 	FVector2D ScoreBoardPosition;
 	APlayerState* OwnerPlayer;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))

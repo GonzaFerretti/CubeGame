@@ -17,8 +17,9 @@ class NIMBLEGIANTTEST_API ACubeGamePlayerController : public APlayerController
 	GENERATED_BODY()
 	
 	protected:
-	void BeginPlayingState() override;
 	void PlayerTick(float DeltaTime) override;
+
+	void UpdateScoreBoard();
 
 	UPROPERTY(EditAnywhere, Category = "UI")
 	TSubclassOf<UScoreboardWidget> ScoreBoardUIBp;
